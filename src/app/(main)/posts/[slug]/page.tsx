@@ -1,0 +1,70 @@
+import fs from 'fs';
+import path from 'path';
+import matter from 'gray-matter';
+import { remark } from 'remark';
+import html from 'remark-html';
+import Image from 'next/image';
+import { notFound } from 'next/navigation';
+
+type Frontmatter = {
+  title: string;
+  date: string;
+  emoji?: string;
+  image?: string;
+};
+
+async function getPostData(slug: string) {
+  const postsDirectory = path.join(process.cwd(), 'src', 'posts');
+  const filePath = path.join(postsDirectory, `${slug}.md`);
+  if (!fs.existsSync(filePath)) { return null; }
+  const fileContents = fs.readFileSync(filePath, 'utf8');
+  const matterResult = matter(fileContents);
+  const processedContent = await remark().use(html).process(matterResult.content);
+  const contentHtml = processedContent.toString();
+  return { slug, contentHtml, frontmatter: matterResult.data as Frontmatter };
+}
+
+export default async function Post({ params }: { params: { slug: string } }) {
+  const postData = await getPostData(params.slug);
+  if (!postData) { notFound(); }
+  const { title, date, emoji, image } = postData.frontmatter;
+
+  return (
+    <>
+      <article>
+        <header className="mb-8 text-center">
+          {emoji && <p className="text-5xl mb-4">{emoji}</p>}
+          {/* ▼▼▼ このh1タグでダークモード時の文字色を指定します ▼▼▼ */}
+          {/* classNameに「dark:text-white」を追加しました */}
+          <h1 className="text-3xl font-bold text-base-dark tracking-wider">{title}</h1>
+          <time className="text-gray-500 dark:text-gray-400 mt-2 block">{date}</time>
+        </header>
+
+        {image && (
+          <div className="my-8">
+            <Image src={image} alt={title} width={1200} height={675} className="w-full h-auto rounded-md" priority/>
+          </div>
+        )}
+
+        <div 
+          className="prose prose-lg dark:prose-invert max-w-none" 
+          dangerouslySetInnerHTML={{ __html: postData.contentHtml }}
+        />
+      </article>
+
+      <div className="mt-16">
+      <div className="flex items-center justify-center p-4 border border-subtle rounded-lg bg-gray-200 h-28">
+          <p className="text-subtle text-lg">工事中…</p>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export async function generateStaticParams() {
+    const postsDirectory = path.join(process.cwd(), 'src', 'posts');
+    const filenames = fs.readdirSync(postsDirectory);
+    return filenames.map((filename) => ({
+        slug: filename.replace(/\.md$/, ''),
+    }));
+}

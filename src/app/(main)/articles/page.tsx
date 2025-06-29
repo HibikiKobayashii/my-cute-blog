@@ -14,7 +14,7 @@ type Post = {
   };
 };
 
-export default function Home() {
+export default function AllArticlesPage() {
   const postsDirectory = path.join(process.cwd(), 'src', 'posts');
   const fileNames = fs.readdirSync(postsDirectory);
   const posts: Post[] = fileNames.map((fileName) => {
@@ -30,33 +30,14 @@ export default function Home() {
   posts.sort((a, b) => (a.frontmatter.date < b.frontmatter.date ? 1 : -1));
 
   return (
-    <div className="max-w-5xl mx-auto pt-8">
+    <>
       <header className="text-center mb-10">
-        <h1 className="text-4xl font-bold text-base-dark tracking-wider">C1NOM3_</h1>
-        <p className="text-subtle mt-2">A log from the dawn.</p>
+        <h1 className="text-3xl font-bold text-base-dark tracking-wider">ALL ARTICLES</h1>
+        <p className="text-subtle mt-2"></p>
       </header>
-      
-      <div className="mb-12">
-        <Image
-          src="/1.png"
-          alt="ヒーローイメージ"
-          width={1200}
-          height={675}
-          className="w-full h-auto rounded-md"
-          priority
-        />
-      </div>
-
-      {/* ▼▼▼ ここから「PICK UP !」の見出しを追加 ▼▼▼ */}
-      <div className="text-center my-12  ">
-      <h2 className="text-3xl font-bold text-base-dark tracking-wider">
-      PICK UP!
-        </h2>
-      </div>
-      {/* ▲▲▲ ここまで追加 ▲▲▲ */}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {posts.slice(0, 3).map((post) => (
+        {posts.map((post) => (
           <article key={post.slug} className="bg-base-light border border-subtle rounded-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
             <Link href={`/posts/${post.slug}`} className="block">
               <div className="aspect-video relative">
@@ -74,12 +55,14 @@ export default function Home() {
           </article>
         ))}
       </div>
-      
+
+      {/* ▼▼▼ ここから修正 ▼▼▼ */}
       <div className="mt-16">
         <div className="flex items-center justify-center p-4 border border-subtle rounded-lg bg-gray-200 h-28">
           <p className="text-subtle text-lg">工事中…</p>
         </div>
       </div>
-    </div>
+      {/* ▲▲▲ ここまで修正 ▲▲▲ */}
+    </>
   );
 }
