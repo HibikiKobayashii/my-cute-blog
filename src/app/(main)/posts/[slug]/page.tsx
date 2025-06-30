@@ -68,4 +68,4 @@ export async function generateStaticParams() {
     return filenames.map((filename) => ({
         slug: filename.replace(/\.md$/, ''),
     }));
-}
+}　　　　　
