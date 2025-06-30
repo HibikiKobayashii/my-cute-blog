@@ -1,40 +1,49 @@
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 
-// 環境変数からAPIキーを読み込む
-const resend = new Resend(process.env.RESEND_API_KEY);
-// 環境変数から送信先のメールアドレスを読み込む
+const resendApiKey = process.env.RESEND_API_KEY;
 const toEmail = process.env.TO_EMAIL_ADDRESS;
 
-// POSTリクエストを処理する関数
+if (!resendApiKey) {
+  throw new Error('RESEND_API_KEY is not defined in environment variables.');
+}
+
+const resend = new Resend(resendApiKey);
+
 export async function POST(request: Request) {
+  if (!toEmail) {
+    return NextResponse.json({ error: '送信先のメールアドレスが設定されていません。' }, { status: 500 });
+  }
+
   try {
-    // フォームのデータを取得
     const { name, email, subject, message } = await request.json();
 
-    if (!toEmail) {
-      throw new Error('送信先のメールアドレスが設定されていません。');
-    }
-
-    // Resendを使ってメールを送信
     const { data, error } = await resend.emails.send({
-      from: 'C1NOM3_ Blog <onboarding@resend.dev>', // 送信元として表示される名前とメールアドレス
+      from: 'C1NOM3_ Blog <onboarding@resend.dev>',
       to: [toEmail],
       subject: `【ブログお問い合わせ】 ${subject}`,
-      reply_to: email, // 返信先として、フォームに入力されたメールアドレスを設定
-      // メール本文
-      html: `<p><strong>お名前:</strong> ${name}</p><p><strong>メールアドレス:</strong> ${email}</p><hr><div>${message.replace(/\n/g, '<br>')}</div>`,
+      reply_to: email,
+      html: `
+        <p><strong>お名前:</strong> ${name}</p>
+        <p><strong>メールアドレス:</strong> ${email}</p>
+        <hr>
+        <div>${message.replace(/\n/g, '<br>')}</div>
+      `,
     });
 
-    // エラーがあればエラーレスポンスを返す
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      console.error('Resend API Error:', error);
+      return NextResponse.json({ error: 'メールの送信に失敗しました。' }, { status: 500 });
     }
 
-    // 成功したら成功レスポンスを返す
-    return NextResponse.json({ message: 'Success' });
+    // ▼▼▼ この行を修正しました ▼▼▼
+    // 成功したら、Resendからの成功データ(data)を返すようにします
+    return NextResponse.json(data);
+    // ▲▲▲ ここまで修正 ▲▲▲
+
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('API Route Error:', error);
+    const errorMessage = error instanceof Error ? error.message : '不明なエラーが発生しました。';
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
