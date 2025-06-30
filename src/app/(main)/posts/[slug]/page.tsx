@@ -6,8 +6,11 @@ import html from 'remark-html';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
-// このページのprops(コンポーネントに渡されるデータ)の型を明確に定義します
-// これまでのカスタムの型定義(interface PageProps)を削除しました
+// ▼▼▼ このページのpropsの型定義を、より網羅的な形に修正しました ▼▼▼
+type Props = {
+  params: { slug: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
 
 type Frontmatter = {
   title: string;
@@ -27,8 +30,7 @@ async function getPostData(slug: string) {
   return { slug, contentHtml, frontmatter: matterResult.data as Frontmatter };
 }
 
-// ▼▼▼ この行の型指定を、最も基本的で標準的なインライン定義に戻しました ▼▼▼
-export default async function Post({ params }: { params: { slug: string } }) {
+export default async function Post({ params }: Props) {
   const postData = await getPostData(params.slug);
   if (!postData) { notFound(); }
   const { title, date, emoji, image } = postData.frontmatter;
