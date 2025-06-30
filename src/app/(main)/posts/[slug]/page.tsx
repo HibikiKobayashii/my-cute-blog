@@ -6,6 +6,13 @@ import html from 'remark-html';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
+// このページのprops(コンポーネントに渡されるデータ)の型を明確に定義します
+type PageProps = {
+  params: {
+    slug: string;
+  };
+};
+
 type Frontmatter = {
   title: string;
   date: string;
@@ -24,7 +31,8 @@ async function getPostData(slug: string) {
   return { slug, contentHtml, frontmatter: matterResult.data as Frontmatter };
 }
 
-export default async function Post({ params }: { params: { slug: string } }) {
+// ▼▼▼ この行の型指定を、上で定義したPagePropsに変更しました ▼▼▼
+export default async function Post({ params }: PageProps) {
   const postData = await getPostData(params.slug);
   if (!postData) { notFound(); }
   const { title, date, emoji, image } = postData.frontmatter;
@@ -34,9 +42,7 @@ export default async function Post({ params }: { params: { slug: string } }) {
       <article>
         <header className="mb-8 text-center">
           {emoji && <p className="text-5xl mb-4">{emoji}</p>}
-          {/* ▼▼▼ このh1タグでダークモード時の文字色を指定します ▼▼▼ */}
-          {/* classNameに「dark:text-white」を追加しました */}
-          <h1 className="text-3xl font-bold text-base-dark tracking-wider">{title}</h1>
+          <h1 className="text-4xl font-bold text-black dark:text-white">{title}</h1>
           <time className="text-gray-500 dark:text-gray-400 mt-2 block">{date}</time>
         </header>
 
@@ -53,8 +59,8 @@ export default async function Post({ params }: { params: { slug: string } }) {
       </article>
 
       <div className="mt-16">
-      <div className="flex items-center justify-center p-4 border border-subtle rounded-lg bg-gray-200 h-28">
-          <p className="text-subtle text-lg">工事中…</p>
+        <div className="flex items-center justify-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-100 dark:bg-gray-800 h-28">
+          <p className="text-gray-500 dark:text-gray-400 text-lg">工事中…</p>
         </div>
       </div>
     </>
