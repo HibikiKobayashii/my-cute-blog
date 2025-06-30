@@ -5,12 +5,7 @@ import { remark } from 'remark';
 import html from 'remark-html';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-
-// ▼▼▼ このページのpropsの型定義を、より網羅的な形に修正しました ▼▼▼
-type Props = {
-  params: { slug: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-};
+import React from 'react'; // Reactをインポートします
 
 type Frontmatter = {
   title: string;
@@ -30,7 +25,8 @@ async function getPostData(slug: string) {
   return { slug, contentHtml, frontmatter: matterResult.data as Frontmatter };
 }
 
-export default async function Post({ params }: Props) {
+// ▼▼▼ この行の型指定を、最もシンプルかつ確実な形に戻し、コンポーネントが返す値の型も明記しました ▼▼▼
+export default async function Post({ params }: { params: { slug: string } }): Promise<React.ReactElement> {
   const postData = await getPostData(params.slug);
   if (!postData) { notFound(); }
   const { title, date, emoji, image } = postData.frontmatter;
