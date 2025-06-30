@@ -22,7 +22,8 @@ export async function POST(request: Request) {
       from: 'C1NOM3_ Blog <onboarding@resend.dev>',
       to: [toEmail],
       subject: `【ブログお問い合わせ】 ${subject}`,
-      reply_to: email,
+      // ▼▼▼ この行の「reply_to」を「replyTo」に修正しました ▼▼▼
+      replyTo: email,
       html: `
         <p><strong>お名前:</strong> ${name}</p>
         <p><strong>メールアドレス:</strong> ${email}</p>
@@ -36,10 +37,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'メールの送信に失敗しました。' }, { status: 500 });
     }
 
-    // ▼▼▼ この行を修正しました ▼▼▼
-    // 成功したら、Resendからの成功データ(data)を返すようにします
     return NextResponse.json(data);
-    // ▲▲▲ ここまで修正 ▲▲▲
 
   } catch (error) {
     console.error('API Route Error:', error);
