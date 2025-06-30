@@ -3,16 +3,18 @@ import { DotGothic16 } from 'next/font/google';
 import './globals.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import { ThemeProvider } from './components/ThemeProvider'; // 作成したThemeProviderをインポート
+import { ThemeProvider } from './components/ThemeProvider';
 import GoogleAnalytics from './components/GoogleAnalytics';
 
 const GA_MEASUREMENT_ID = "G-XXXXXXXXXX"; 
 
+// ▼▼▼ この部分を修正しました ▼▼▼
 const dotGothic16 = DotGothic16({
-  weight: ['400'],s
-  subsets: ['latin'],
+  weight: ['400'],
+  subsets: ['latin'], // エラーの原因となっていた 'japanese' を削除
   display: 'swap',
 });
+// ▲▲▲ ここまで修正 ▲▲▲
 
 export const metadata: Metadata = {
   title: {
@@ -32,8 +34,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" suppressHydrationWarning>
-      <body className={`${dotGothic16.className} m-4 min-h-[calc(100vh-2rem)] border-4 border-subtle rounded-2xl bg-base-light text-base-dark dark:bg-base-dark dark:text-base-light flex flex-col`}>
-        {/* ▼▼▼ ここから修正 ▼▼▼ */}
+      <body className={`${dotGothic16.className} m-4 min-h-[calc(100vh-2rem)] border-4 border-gray-700 dark:border-gray-300 bg-gray-100 dark:bg-black flex flex-col`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -47,7 +48,6 @@ export default function RootLayout({
           </main>
           <Footer />
         </ThemeProvider>
-        {/* ▲▲▲ ここまで修正 ▲▲▲ */}
       </body>
     </html>
   );
