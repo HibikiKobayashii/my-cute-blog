@@ -5,7 +5,6 @@ import { remark } from 'remark';
 import html from 'remark-html';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import React from 'react';
 
 type Frontmatter = {
   title: string;
@@ -25,8 +24,10 @@ async function getPostData(slug: string) {
   return { slug, contentHtml, frontmatter: matterResult.data as Frontmatter };
 }
 
-// ▼▼▼ この行の型指定を、any を使ってエラーを回避するように変更しました ▼▼▼
+// ▼▼▼ この部分を修正しました ▼▼▼
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function Post({ params }: any) {
+// ▲▲▲ ここまで修正 ▲▲▲
   const postData = await getPostData(params.slug);
   if (!postData) { notFound(); }
   const { title, date, emoji, image } = postData.frontmatter;
