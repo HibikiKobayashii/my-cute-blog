@@ -8,13 +8,11 @@ import GoogleAnalytics from './components/GoogleAnalytics';
 
 const GA_MEASUREMENT_ID = "G-XXXXXXXXXX"; 
 
-// ▼▼▼ この部分を修正しました ▼▼▼
 const dotGothic16 = DotGothic16({
   weight: ['400'],
-  subsets: ['latin'], // エラーの原因となっていた 'japanese' を削除
+  subsets: ['latin'],
   display: 'swap',
 });
-// ▲▲▲ ここまで修正 ▲▲▲
 
 export const metadata: Metadata = {
   title: {
@@ -33,8 +31,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja" suppressHydrationWarning>
-      <body className={`${dotGothic16.className} m-4 min-h-[calc(100vh-2rem)] border-4 border-gray-700 dark:border-gray-300 bg-gray-100 dark:bg-black flex flex-col`}>
+    <html lang="ja" className={`${dotGothic16.className} bg-base-dark dark:white`} suppressHydrationWarning>
+      
+      {/* ▼▼▼ ここが外枠です ▼▼▼ */}
+      {/* この<body>タグのクラスで、外枠自体のデザインを指定しています */}
+      <body className="m-4 min-h-[calc(100vh-2rem)] rounded-2xl border-4 border-black dark:!border-white bg-gray-100 dark:bg-black flex flex-col">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
