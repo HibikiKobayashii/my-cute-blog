@@ -9,8 +9,8 @@ import GoogleAnalytics from './components/GoogleAnalytics';
 const GA_MEASUREMENT_ID = "G-XXXXXXXXXX"; 
 
 const dotGothic16 = DotGothic16({
-  weight: ['400'],
-  subsets: ['latin', 'japanese'],
+  weight: ['400'],s
+  subsets: ['latin'],
   display: 'swap',
 });
 
