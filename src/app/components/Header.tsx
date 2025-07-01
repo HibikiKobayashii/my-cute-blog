@@ -1,10 +1,10 @@
 import Link from 'next/link';
-// import { ThemeToggleButton } from './ThemeToggleButton'; // ボタンを非表示にするため、一時的にコメントアウト
+import { ThemeToggleButton } from './ThemeToggleButton'; // ボタンを非表示にするためのコメントアウトを解除
 
 export default function Header() {
   return (
     <header className="w-full p-4">
-      {/* ▼▼▼ このコンテナのクラスを、レスポンシ-ブ対応のものに修正しました ▼▼▼ */}
+      {/* このコンテナのクラスを、レスポンシブ対応のものに修正しました */}
       <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-center md:justify-between gap-4 border-b-2 border-base-dark dark:border-base-light pb-4">
         
         {/* 左側のセクション */}
@@ -12,7 +12,7 @@ export default function Header() {
           <Link href="/reviews" className="border border-subtle rounded-md px-3 py-2 text-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors active:translate-y-px whitespace-nowrap">
             REVIEW PRODUCTS
           </Link>
-          {/* <ThemeToggleButton /> */}
+          <ThemeToggleButton /> {/* ボタンのコメントアウトを解除 */}
         </div>
         
         {/* 中央のナビゲーション */}
