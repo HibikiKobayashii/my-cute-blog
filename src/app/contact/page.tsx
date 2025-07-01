@@ -53,7 +53,7 @@ export default function ContactPage() {
           <h1 className="text-3xl font-bold mb-4 tracking-wider">CONTACT</h1>
           <p className="text-subtle">
             お問い合わせは、<br />
-            右のフォームより<br />
+            こちらのフォームより<br />
             お願いいたします。
           </p>
         </div>
