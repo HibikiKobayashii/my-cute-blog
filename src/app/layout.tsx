@@ -2,10 +2,11 @@ import type { Metadata } from 'next';
 import { DotGothic16 } from 'next/font/google';
 import './globals.css';
 import Header from './components/Header';
+import Footer from './components/Footer'; // フッターをインポート
 
 const dotGothic16 = DotGothic16({
   weight: ['400'],
-  subsets: ['latin', ],
+  subsets: ['latin'],
   display: 'swap',
 });
 
@@ -23,7 +24,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // ▼▼▼ ここから修正 ▼▼▼
     // <html>に背景色を設定して、フレームの外側を色付け
     <html lang="ja" className={`${dotGothic16.className} bg-base-dark`} suppressHydrationWarning>
       {/* <body>にmarginとborderを設定してフレームを作成 */}
@@ -31,8 +31,8 @@ export default function RootLayout({
         <Header />
         {/* メインコンテンツエリアに上下のpaddingを追加 */}
         <main className="px-4 pb-8">{children}</main>
+        <Footer />
       </body>
     </html>
-    // ▲▲▲ ここまで修正 ▲▲▲
   );
 }
