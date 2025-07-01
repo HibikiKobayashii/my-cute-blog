@@ -5,7 +5,7 @@ import Header from './components/Header';
 
 const dotGothic16 = DotGothic16({
   weight: ['400'],
-  subsets: ['latin', 'japanese'],
+  subsets: ['latin', ],
   display: 'swap',
 });
 
