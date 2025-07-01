@@ -37,7 +37,7 @@ export default async function Post({ params }: any) {
       <article>
         <header className="mb-8 text-center">
           {emoji && <p className="text-5xl mb-4">{emoji}</p>}
-          <h1 className="text-4xl font-bold text-black dark:text-white">{title}</h1>
+          <h1 className="text-4xl font-bold text-base-dark tracking-wider">{title}</h1>
           <time className="text-gray-500 dark:text-gray-400 mt-2 block">{date}</time>
         </header>
 
