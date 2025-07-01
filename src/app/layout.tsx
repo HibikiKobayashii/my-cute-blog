@@ -35,7 +35,7 @@ export default function RootLayout({
       
       {/* ▼▼▼ ここが外枠です ▼▼▼ */}
       {/* この<body>タグのクラスで、外枠自体のデザインを指定しています */}
-      <body className="m-4 min-h-[calc(100vh-2rem)] rounded-2xl border-4 border-black dark:!border-white bg-gray-100 dark:bg-black flex flex-col">
+      <body className="m-4 min-h-[calc(100vh-2rem)] rounded-2xl border-4 border-black dark:border-white bg-gray-1 dark:bg-white flex flex-col">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
