@@ -7,7 +7,7 @@ export default function ReviewsPage() {
     <>
       <header className="text-center mb-10">
         <h1 className="text-3xl font-bold text-base-dark tracking-wider">REVIEW PRODUCTS</h1>
-        <p className="text-subtle mt-2">レビューした商品一覧</p>
+        <p className="text-subtle mt-2"></p>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
