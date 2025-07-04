@@ -21,10 +21,10 @@ type Frontmatter = {
   productAmazonLink?: string;
 };
 
-// Vercelでのビルドエラーを修正するための型定義
-type Props = {
-  params: { slug: string };
-};
+// ▼▼▼ 1. この型定義を削除しました ▼▼▼
+// type Props = {
+//   params: { slug: string };
+// };
 
 async function getPostData(slug: string) {
   const postsDirectory = path.join(process.cwd(), 'src', 'posts');
@@ -37,8 +37,8 @@ async function getPostData(slug: string) {
   return { slug, contentHtml, frontmatter: matterResult.data as Frontmatter };
 }
 
-// ページのPropsの型を修正してビルドエラーを解消
-export default async function Post({ params }: Props) {
+// ▼▼▼ 2. ページのPropsの型を修正してビルドエラーを解消 ▼▼▼
+export default async function Post({ params }: { params: { slug:string } }) {
   const postData = await getPostData(params.slug);
   if (!postData) { notFound(); }
 
@@ -88,14 +88,11 @@ export default async function Post({ params }: Props) {
               />
             </div>
 
-            {/* ▼▼▼ このブロックの構造を変更しました ▼▼▼ */}
             <div className="w-full md:w-5/6 flex flex-col justify-center gap-y-4">
-              {/* テキスト用のコンテナ */}
               <div className="w-full text-center md:text-left">
                 <p className="text-base text-gray-500">{productBrand}</p>
                 <h3 className="font-bold text-lg text-base-dark dark:text-base-light">{productName}</h3>
               </div>
-              {/* ボタンを中央寄せするための専用コンテナ */}
               <div className="w-full flex justify-center">
                 <Link href={productAmazonLink} target="_blank" rel="noopener noreferrer" className="bg-yellow-500 text-white font-bold py-2 px-4 rounded-md text-base hover:bg-yellow-600 transition-colors text-center max-w-xs">
                   Amazonで詳細をみる
