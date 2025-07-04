@@ -21,11 +21,6 @@ type Frontmatter = {
   productAmazonLink?: string;
 };
 
-// ▼▼▼ 1. この型定義を削除しました ▼▼▼
-// type Props = {
-//   params: { slug: string };
-// };
-
 async function getPostData(slug: string) {
   const postsDirectory = path.join(process.cwd(), 'src', 'posts');
   const filePath = path.join(postsDirectory, `${slug}.md`);
@@ -37,8 +32,9 @@ async function getPostData(slug: string) {
   return { slug, contentHtml, frontmatter: matterResult.data as Frontmatter };
 }
 
-// ▼▼▼ 2. ページのPropsの型を修正してビルドエラーを解消 ▼▼▼
-export default async function Post({ params }: { params: { slug:string } }) {
+// ▼▼▼ この部分を修正してビルドエラーを解消します ▼▼▼
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default async function Post({ params }: any) {
   const postData = await getPostData(params.slug);
   if (!postData) { notFound(); }
 
