@@ -32,7 +32,6 @@ async function getPostData(slug: string) {
   return { slug, contentHtml, frontmatter: matterResult.data as Frontmatter };
 }
 
-// ▼▼▼ この部分を修正してビルドエラーを解消します ▼▼▼
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function Post({ params }: any) {
   const postData = await getPostData(params.slug);
@@ -90,7 +89,8 @@ export default async function Post({ params }: any) {
                 <h3 className="font-bold text-lg text-base-dark dark:text-base-light">{productName}</h3>
               </div>
               <div className="w-full flex justify-center">
-                <Link href={productAmazonLink} target="_blank" rel="noopener noreferrer" className="bg-yellow-500 text-white font-bold py-2 px-4 rounded-md text-base hover:bg-yellow-600 transition-colors text-center max-w-xs">
+                {/* ▼▼▼ この行にアニメーション用のクラスを追加しました ▼▼▼ */}
+                <Link href={productAmazonLink} target="_blank" rel="noopener noreferrer" className="bg-yellow-500 text-white font-bold py-2 px-4 rounded-md text-base hover:bg-yellow-600 transition-colors text-center max-w-xs transition-transform duration-75 active:translate-y-px">
                   Amazonで詳細をみる
                 </Link>
               </div>

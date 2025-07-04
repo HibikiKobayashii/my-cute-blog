@@ -39,7 +39,8 @@ export default function AllArticlesPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {posts.map((post) => (
           <article key={post.slug} className="bg-base-light border border-subtle rounded-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-            <Link href={`/posts/${post.slug}`} className="block">
+            {/* ▼▼▼ この行の active:translate-y-px を active:translate-y-0.5 に変更しました ▼▼▼ */}
+            <Link href={`/posts/${post.slug}`} className="block transition-transform duration-75 active:translate-y-1.5">
               <div className="aspect-video relative">
                 {post.frontmatter.image ? (
                   <Image src={post.frontmatter.image} alt={post.frontmatter.title} fill className="object-cover"/>
@@ -56,13 +57,11 @@ export default function AllArticlesPage() {
         ))}
       </div>
 
-      {/* ▼▼▼ ここから修正 ▼▼▼ */}
       <div className="mt-16">
         <div className="flex items-center justify-center p-4 border border-subtle rounded-lg bg-gray-200 h-28">
           <p className="text-subtle text-lg">工事中…</p>
         </div>
       </div>
-      {/* ▲▲▲ ここまで修正 ▲▲▲ */}
     </>
   );
 }
