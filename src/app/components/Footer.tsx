@@ -9,14 +9,17 @@ export default function Footer() {
       {/* 内側のコンテナ */}
       <div className="max-w-5xl mx-auto flex flex-col items-center gap-8 border-t-2 border-base-dark pt-8">
         
+        {/* ▼▼▼ このブロックをヘッダーと同じ構成に修正しました ▼▼▼ */}
         <div className="w-full flex flex-col items-center gap-4 md:flex-row md:justify-between">
           
-          {/* ▼▼▼ 1. 左側の空スペースにクラスを追加 ▼▼▼ */}
-          <div className="flex-1 hidden md:block">
-            {/* この要素が右側と均等にスペースを確保します */}
+          {/* 1. 左側のセクション */}
+          <div className="flex-1 flex items-center gap-4">
+            <Link href="/reviews" className="border border-subtle rounded-md px-3 py-2 text-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors active:translate-y-px whitespace-nowrap">
+              REVIEW PRODUCTS
+            </Link>
           </div>
 
-          {/* 中央のナビゲーション */}
+          {/* 2. 中央のナビゲーション */}
           <nav className="border border-subtle rounded-md flex-none">
             <ul className="flex flex-wrap items-center justify-center">
               <li>
@@ -42,7 +45,7 @@ export default function Footer() {
             </ul>
           </nav>
           
-          {/* ▼▼▼ 2. 右側のSNSリンクの親要素にクラスを追加 ▼▼▼ */}
+          {/* 3. 右側のSNSリンク */}
           <div className="flex-1 flex justify-center md:justify-end">
             <div className="flex items-center space-x-3">
                 <a href="https://x.com/hitti12345678" target="_blank" rel="noopener noreferrer" className="bg-accent text-base-light py-2 px-3 rounded-md text-sm hover:opacity-80 transition-transform duration-75 active:translate-y-px">
