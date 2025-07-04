@@ -9,7 +9,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-// 型定義に商品情報を追加
+// 型定義
 type Frontmatter = {
   title: string;
   date: string;
@@ -19,6 +19,11 @@ type Frontmatter = {
   productName?: string;
   productBannerImage?: string;
   productAmazonLink?: string;
+};
+
+// Vercelでのビルドエラーを修正するための型定義
+type Props = {
+  params: { slug: string };
 };
 
 async function getPostData(slug: string) {
@@ -32,14 +37,11 @@ async function getPostData(slug: string) {
   return { slug, contentHtml, frontmatter: matterResult.data as Frontmatter };
 }
 
-// ▼▼▼ この部分の型定義をanyに戻しました ▼▼▼
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default async function Post({ params }: any) {
-// ▲▲▲ ここまで修正 ▲▲▲
+// ページのPropsの型を修正してビルドエラーを解消
+export default async function Post({ params }: Props) {
   const postData = await getPostData(params.slug);
   if (!postData) { notFound(); }
 
-  // frontmatterから商品情報も取得
   const {
     title,
     date,
@@ -74,26 +76,27 @@ export default async function Post({ params }: any) {
 
       <div className="mt-16 space-y-8">
         {productBannerImage && productAmazonLink && (
-          <div className="border border-black rounded-lg p-4 flex flex-col md:flex-row items-center gap-6 bg-gray-50 dark:bg-gray-800/50">
-            <div className="md:w-1/4 w-full">
+          <div className="border border-black rounded-lg p-4 flex flex-col md:flex-row items-center gap-x-6 gap-y-4 bg-gray-50 dark:bg-gray-800/50">
+            <div className="w-full md:w-1/6 flex justify-center items-center">
               <Image
                 src={productBannerImage}
-                alt={`${productName} banner`}
-                width={400}
-                height={400}
-                className="w-full h-auto rounded-md object-cover aspect-square"
+                alt={productName || 'Product Banner'}
+                width={150}
+                height={150}
+                className="w-auto h-auto object-contain rounded-md"
+                style={{ maxHeight: '120px' }}
               />
             </div>
-            <div className="md:w-3/4 w-full self-stretch flex flex-col justify-between">
-              <div className="pt-8">
-                <p className="text-lg text-gray-500">{productBrand}</p>
-                <h3 className="font-bold text-xl text-base-dark dark:text-base-light mt-1">{productName}</h3>
+
+            <div className="w-full md:w-5/6 flex flex-col justify-center items-center md:items-start gap-y-2">
+              <div className="w-full text-center md:text-left">
+                <p className="text-base text-gray-500">{productBrand}</p>
+                <h3 className="font-bold text-lg text-base-dark dark:text-base-light">{productName}</h3>
               </div>
-              <div className="flex justify-end">
-                <Link href={productAmazonLink} target="_blank" rel="noopener noreferrer" className="bg-yellow-500 text-white font-bold py-3 px-5 rounded-md text-xl hover:bg-yellow-600 transition-colors text-center max-w-xs">
-                  Amazonで詳細をみる
-                </Link>
-              </div>
+              {/* ▼▼▼ この行の md:ml-3 を md:ml-8 に変更しました ▼▼▼ */}
+              <Link href={productAmazonLink} target="_blank" rel="noopener noreferrer" className="mt-2 md:ml-8 bg-yellow-500 text-white font-bold py-2 px-4 rounded-md text-base hover:bg-yellow-600 transition-colors text-center max-w-xs">
+                Amazonで詳細をみる
+              </Link>
             </div>
           </div>
         )}
@@ -107,9 +110,9 @@ export default async function Post({ params }: any) {
 }
 
 export async function generateStaticParams() {
-    const postsDirectory = path.join(process.cwd(), 'src', 'posts');
-    const filenames = fs.readdirSync(postsDirectory);
-    return filenames.map((filename) => ({
-        slug: filename.replace(/\.md$/, ''),
-    }));
+  const postsDirectory = path.join(process.cwd(), 'src', 'posts');
+  const filenames = fs.readdirSync(postsDirectory);
+  return filenames.map((filename) => ({
+    slug: filename.replace(/\.md$/, ''),
+  }));
 }
