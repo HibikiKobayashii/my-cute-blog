@@ -88,15 +88,19 @@ export default async function Post({ params }: Props) {
               />
             </div>
 
-            <div className="w-full md:w-5/6 flex flex-col justify-center items-center md:items-start gap-y-2">
+            {/* ▼▼▼ このブロックの構造を変更しました ▼▼▼ */}
+            <div className="w-full md:w-5/6 flex flex-col justify-center gap-y-4">
+              {/* テキスト用のコンテナ */}
               <div className="w-full text-center md:text-left">
                 <p className="text-base text-gray-500">{productBrand}</p>
                 <h3 className="font-bold text-lg text-base-dark dark:text-base-light">{productName}</h3>
               </div>
-              {/* ▼▼▼ この行の md:ml-3 を md:ml-8 に変更しました ▼▼▼ */}
-              <Link href={productAmazonLink} target="_blank" rel="noopener noreferrer" className="mt-2 md:ml-8 bg-yellow-500 text-white font-bold py-2 px-4 rounded-md text-base hover:bg-yellow-600 transition-colors text-center max-w-xs">
-                Amazonで詳細をみる
-              </Link>
+              {/* ボタンを中央寄せするための専用コンテナ */}
+              <div className="w-full flex justify-center">
+                <Link href={productAmazonLink} target="_blank" rel="noopener noreferrer" className="bg-yellow-500 text-white font-bold py-2 px-4 rounded-md text-base hover:bg-yellow-600 transition-colors text-center max-w-xs">
+                  Amazonで詳細をみる
+                </Link>
+              </div>
             </div>
           </div>
         )}
