@@ -1,16 +1,24 @@
+// [slug]/page.tsx
+
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { remark } from 'remark';
 import html from 'remark-html';
 import Image from 'next/image';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+// 型定義に商品情報を追加
 type Frontmatter = {
   title: string;
   date: string;
   emoji?: string;
   image?: string;
+  productBrand?: string;
+  productName?: string;
+  productBannerImage?: string;
+  productAmazonLink?: string;
 };
 
 async function getPostData(slug: string) {
@@ -24,13 +32,21 @@ async function getPostData(slug: string) {
   return { slug, contentHtml, frontmatter: matterResult.data as Frontmatter };
 }
 
-// ▼▼▼ この部分を修正しました ▼▼▼
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default async function Post({ params }: any) {
-// ▲▲▲ ここまで修正 ▲▲▲
+export default async function Post({ params }: { params: { slug:string } }) {
   const postData = await getPostData(params.slug);
   if (!postData) { notFound(); }
-  const { title, date, emoji, image } = postData.frontmatter;
+
+  // frontmatterから商品情報も取得
+  const {
+    title,
+    date,
+    emoji,
+    image,
+    productBrand,
+    productName,
+    productBannerImage,
+    productAmazonLink
+  } = postData.frontmatter;
 
   return (
     <>
@@ -47,13 +63,39 @@ export default async function Post({ params }: any) {
           </div>
         )}
 
-        <div 
-          className="prose prose-lg dark:prose-invert max-w-none" 
+        <div
+          className="prose prose-lg dark:prose-invert max-w-none"
           dangerouslySetInnerHTML={{ __html: postData.contentHtml }}
         />
       </article>
 
-      <div className="mt-16">
+      <div className="mt-16 space-y-8">
+        {productBannerImage && productAmazonLink && (
+          <div className="border border-black rounded-lg p-4 flex flex-col md:flex-row items-center gap-6 bg-gray-50 dark:bg-gray-800/50">
+            <div className="md:w-1/4 w-full">
+              <Image
+                src={productBannerImage}
+                alt={`${productName} banner`}
+                width={400}
+                height={400}
+                className="w-full h-auto rounded-md object-cover aspect-square"
+              />
+            </div>
+            <div className="md:w-3/4 w-full self-stretch flex flex-col justify-between">
+              {/* ▼▼▼ このdivの上の余白を pt-8 に変更しました ▼▼▼ */}
+              <div className="pt-8">
+                <p className="text-lg text-gray-500">{productBrand}</p>
+                <h3 className="font-bold text-xl text-base-dark dark:text-base-light mt-1">{productName}</h3>
+              </div>
+              <div className="flex justify-end">
+                <Link href={productAmazonLink} target="_blank" rel="noopener noreferrer" className="bg-yellow-500 text-white font-bold py-3 px-5 rounded-md text-xl hover:bg-yellow-600 transition-colors text-center max-w-xs">
+                  Amazonで詳細をみる
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="flex items-center justify-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-100 dark:bg-gray-800 h-28">
           <p className="text-gray-500 dark:text-gray-400 text-lg">工事中…</p>
         </div>
@@ -68,4 +110,4 @@ export async function generateStaticParams() {
     return filenames.map((filename) => ({
         slug: filename.replace(/\.md$/, ''),
     }));
-}　　　　　
+}
