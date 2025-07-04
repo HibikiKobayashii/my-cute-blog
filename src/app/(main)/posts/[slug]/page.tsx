@@ -9,6 +9,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+// ▼▼▼ この部分を修正しました ▼▼▼
+
+// propsの型を明確に定義
+type Props = {
+  params: { slug: string };
+};
+
 // 型定義に商品情報を追加
 type Frontmatter = {
   title: string;
@@ -32,7 +39,9 @@ async function getPostData(slug: string) {
   return { slug, contentHtml, frontmatter: matterResult.data as Frontmatter };
 }
 
-export default async function Post({ params }: { params: { slug:string } }) {
+// コンポーネントの引数に定義したProps型を適用
+export default async function Post({ params }: Props) {
+// ▲▲▲ ここまで修正 ▲▲▲
   const postData = await getPostData(params.slug);
   if (!postData) { notFound(); }
 
@@ -82,7 +91,6 @@ export default async function Post({ params }: { params: { slug:string } }) {
               />
             </div>
             <div className="md:w-3/4 w-full self-stretch flex flex-col justify-between">
-              {/* ▼▼▼ このdivの上の余白を pt-8 に変更しました ▼▼▼ */}
               <div className="pt-8">
                 <p className="text-lg text-gray-500">{productBrand}</p>
                 <h3 className="font-bold text-xl text-base-dark dark:text-base-light mt-1">{productName}</h3>
