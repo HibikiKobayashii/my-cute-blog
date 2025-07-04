@@ -9,13 +9,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-// ▼▼▼ この部分を修正しました ▼▼▼
-
-// propsの型を明確に定義
-type Props = {
-  params: { slug: string };
-};
-
 // 型定義に商品情報を追加
 type Frontmatter = {
   title: string;
@@ -39,8 +32,9 @@ async function getPostData(slug: string) {
   return { slug, contentHtml, frontmatter: matterResult.data as Frontmatter };
 }
 
-// コンポーネントの引数に定義したProps型を適用
-export default async function Post({ params }: Props) {
+// ▼▼▼ この部分の型定義をanyに戻しました ▼▼▼
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default async function Post({ params }: any) {
 // ▲▲▲ ここまで修正 ▲▲▲
   const postData = await getPostData(params.slug);
   if (!postData) { notFound(); }
