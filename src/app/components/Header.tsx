@@ -18,7 +18,7 @@ export default function Header() {
         <nav className="border border-subtle rounded-md flex-none">
           <ul className="flex flex-wrap items-center justify-center">
             <li>
-              <Link href="/" className="block py-2 px-3 bg-base-dark text-base-light dark:bg-base-light dark:text-base-dark font-bold transition-transform duration-75 active:translate-y-px">
+              <Link href="/" className="block py-2 px-3 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-75 active:translate-y-px">
                 HOME
               </Link>
             </li>
