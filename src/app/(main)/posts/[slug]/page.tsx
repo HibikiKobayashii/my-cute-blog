@@ -1,5 +1,3 @@
-// [slug]/page.tsx
-
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
@@ -8,8 +6,8 @@ import html from 'remark-html';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import PickUpPosts from '@/app/components/PickUpPosts'; // ▼ 1. 作成したコンポーネントをインポート
 
-// 型定義
 type Frontmatter = {
   title: string;
   date: string;
@@ -19,6 +17,7 @@ type Frontmatter = {
   productName?: string;
   productBannerImage?: string;
   productAmazonLink?: string;
+  productButtonText?: string;
 };
 
 async function getPostData(slug: string) {
@@ -45,7 +44,8 @@ export default async function Post({ params }: any) {
     productBrand,
     productName,
     productBannerImage,
-    productAmazonLink
+    productAmazonLink,
+    productButtonText
   } = postData.frontmatter;
 
   return (
@@ -64,7 +64,7 @@ export default async function Post({ params }: any) {
         )}
 
         <div
-          className="prose prose-lg dark:prose-invert max-w-none"
+          className="prose prose-xl dark:prose-invert"
           dangerouslySetInnerHTML={{ __html: postData.contentHtml }}
         />
       </article>
@@ -82,16 +82,14 @@ export default async function Post({ params }: any) {
                 style={{ maxHeight: '120px' }}
               />
             </div>
-
             <div className="w-full md:w-5/6 flex flex-col justify-center gap-y-4">
               <div className="w-full text-center md:text-left">
                 <p className="text-base text-gray-500">{productBrand}</p>
                 <h3 className="font-bold text-lg text-base-dark dark:text-base-light">{productName}</h3>
               </div>
               <div className="w-full flex justify-center">
-                {/* ▼▼▼ この行にアニメーション用のクラスを追加しました ▼▼▼ */}
                 <Link href={productAmazonLink} target="_blank" rel="noopener noreferrer" className="bg-yellow-500 text-white font-bold py-2 px-4 rounded-md text-base hover:bg-yellow-600 transition-colors text-center max-w-xs transition-transform duration-75 active:translate-y-px">
-                  Amazonで詳細をみる
+                  {productButtonText || 'Amazonで詳細をみる'}
                 </Link>
               </div>
             </div>
@@ -101,6 +99,9 @@ export default async function Post({ params }: any) {
         <div className="flex items-center justify-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-100 dark:bg-gray-800 h-28">
           <p className="text-gray-500 dark:text-gray-400 text-lg">工事中…</p>
         </div>
+
+        {/* ▼ 2. ここにピックアップ記事コンポーネントを追加 ▼ */}
+        <PickUpPosts currentPostSlug={params.slug} />
       </div>
     </>
   );

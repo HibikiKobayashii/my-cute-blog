@@ -1,13 +1,14 @@
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
-  // ▼▼▼ この行を追加 ▼▼▼
   darkMode: 'class', 
-  // ▲▲▲ ここまで追加 ▲▲▲
+  // ▼▼▼ content の部分を修正しました ▼▼▼
   content: [
-    './src/**/*.{js,ts,jsx,tsx,mdx}',
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  // ▲▲▲ ここまで修正 ▲▲▲
   theme: {
     extend: {
       colors: {
