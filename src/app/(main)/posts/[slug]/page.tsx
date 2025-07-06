@@ -12,7 +12,7 @@ import PickUpPosts from '@/app/components/PickUpPosts';
 import remarkSlug from 'remark-slug';
 import { visit } from 'unist-util-visit';
 import { Root } from 'mdast';
-import { Node } from 'unist';
+// import { Node } from 'unist'; // ← この行を削除しました
 
 // 型定義
 type Frontmatter = {
@@ -44,10 +44,10 @@ async function getPostData(slug: string) {
   const toc: TocItem[] = [];
 
   const processedContent = await remark()
-    // ▼▼▼ この部分を修正しました ▼▼▼
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .use(remarkSlug as any)
     .use(() => (tree: Root) => {
+      // visitの引数から : Node を削除しました
       visit(tree, 'heading', (node) => {
         const text = node.children.map(child => (child.type === 'text' ? child.value : '')).join('');
         if (node.depth > 1 && node.depth < 4) {
