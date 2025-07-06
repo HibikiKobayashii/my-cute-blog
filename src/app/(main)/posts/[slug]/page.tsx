@@ -2,9 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { remark } from 'remark';
-// ▼▼▼ 1. htmlの代わりに、新しいライブラリをインポート ▼▼▼
+// ▼▼▼ 1. 必要なライブラリをインポート ▼▼▼
 import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
+import rehypeRaw from 'rehype-raw'; // ← この行を追加
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -57,8 +58,9 @@ async function getPostData(slug: string) {
         }
       });
     })
-    .use(remarkRehype) // remarkからrehypeへの変換
-    .use(rehypeStringify) // rehypeからHTML文字列への変換
+    .use(remarkRehype, { allowDangerousHtml: true }) // ← HTMLを許可するオプションを追加
+    .use(rehypeRaw) // ← HTMLを処理するプラグインを追加
+    .use(rehypeStringify)
     .process(matterResult.content);
   
   const contentHtml = processedContent.toString();
@@ -71,11 +73,10 @@ async function getPostData(slug: string) {
   };
 }
 
-/// Postコンポーネント
+// Postコンポーネント
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function Post({ params }: any) {
   const postData = await getPostData(params.slug);
-  // ...
   if (!postData) { notFound(); }
 
   const {
@@ -148,7 +149,6 @@ export default async function Post({ params }: any) {
 
       {/* 記事下コンテンツ */}
       <div className="mt-16 space-y-8">
-        {/* ▼▼▼ このブロックのクラスを修正しました ▼▼▼ */}
         {productBannerImage && productAmazonLink && (
           <div className="border border-black rounded-lg p-4 flex flex-col md:flex-row items-center gap-x-6 gap-y-4 bg-gray-50">
             <div className="w-full md:w-1/6 flex justify-center items-center">
@@ -164,11 +164,10 @@ export default async function Post({ params }: any) {
             <div className="w-full md:w-5/6 flex flex-col justify-center gap-y-4">
               <div className="w-full text-center md:text-left">
                 <p className="text-base text-gray-500">{productBrand}</p>
-                {/* 商品名のテキストカラーからダークモード指定を削除 */}
                 <h3 className="font-bold text-lg text-base-dark">{productName}</h3>
               </div>
               <div className="w-full flex justify-center">
-                <Link href={productAmazonLink} target="_blank" rel="noopener noreferrer" className="bg-yellow-500 text-white font-bold py-2 px-4 rounded-md text-base hover:bg-yellow-600 transition-colors text-center max-w-xs transition-transform duration-75 active:translate-y-px">{productButtonText || 'Amazon'}</Link>
+                <Link href={productAmazonLink} target="_blank" rel="noopener noreferrer" className="bg-yellow-500 text-white font-bold py-2 px-4 rounded-md text-base hover:bg-yellow-600 transition-colors text-center max-w-xs transition-transform duration-75 active:translate-y-px">{productButtonText || 'Amazonで詳細をみる'}</Link>
               </div>
             </div>
           </div>
