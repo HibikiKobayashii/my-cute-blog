@@ -71,10 +71,11 @@ async function getPostData(slug: string) {
   };
 }
 
-// Postコンポーネント
+/// Postコンポーネント
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function Post({ params }: any) {
   const postData = await getPostData(params.slug);
+  // ...
   if (!postData) { notFound(); }
 
   const {
