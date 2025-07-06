@@ -129,7 +129,7 @@ export default async function Post({ params }: any) {
         </header>
         
         {image && (
-          <div className="my-8 border border-black rounded-lg p-1">
+          <div className="my-8 border border-black rounded-lg p-0">
             <Image src={image} alt={title} width={1200} height={675} className="w-full h-auto rounded-md" priority/>
           </div>
         )}
@@ -157,7 +157,7 @@ export default async function Post({ params }: any) {
             </div>
             <div className="w-full md:w-5/6 flex flex-col justify-center gap-y-4">
               <div className="w-full text-center md:text-left"><p className="text-base text-gray-500">{productBrand}</p><h3 className="font-bold text-lg text-base-dark">{productName}</h3></div>
-              <div className="w-full flex justify-center"><Link href={productAmazonLink} target="_blank" rel="noopener noreferrer" className="bg-yellow-500 text-white font-bold py-2 px-4 rounded-md text-base hover:bg-yellow-600 transition-colors text-center max-w-xs transition-transform duration-75 active:translate-y-px">{productButtonText || 'Amazonで詳細をみる'}</Link></div>
+              <div className="w-full flex justify-center"><Link href={productAmazonLink} target="_blank" rel="noopener noreferrer" className="bg-yellow-500 text-white font-bold py-2 px-4 rounded-md text-base hover:bg-yellow-600 transition-colors text-center max-w-xs transition-transform duration-75 active:translate-y-px">{productButtonText || 'Amazon'}</Link></div>
             </div>
           </div>
         )}
