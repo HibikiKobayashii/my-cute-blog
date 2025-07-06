@@ -2,10 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { remark } from 'remark';
-// ▼▼▼ 1. 必要なライブラリをインポート ▼▼▼
 import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
-import rehypeRaw from 'rehype-raw'; // ← この行を追加
+import rehypeRaw from 'rehype-raw';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -13,6 +12,7 @@ import PickUpPosts from '@/app/components/PickUpPosts';
 import remarkSlug from 'remark-slug';
 import { visit } from 'unist-util-visit';
 import { Root } from 'mdast';
+import { Node } from 'unist';
 
 // 型定義
 type Frontmatter = {
@@ -43,23 +43,25 @@ async function getPostData(slug: string) {
   const matterResult = matter(fileContents);
   const toc: TocItem[] = [];
 
-  // ▼▼▼ 2. remark処理のパイプラインを修正 ▼▼▼
   const processedContent = await remark()
-    .use(remarkSlug)
+    // ▼▼▼ この部分を修正しました ▼▼▼
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .use(remarkSlug as any)
     .use(() => (tree: Root) => {
       visit(tree, 'heading', (node) => {
         const text = node.children.map(child => (child.type === 'text' ? child.value : '')).join('');
         if (node.depth > 1 && node.depth < 4) {
           toc.push({
             text,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             id: (node.data as any)?.id as string || '',
             depth: node.depth,
           });
         }
       });
     })
-    .use(remarkRehype, { allowDangerousHtml: true }) // ← HTMLを許可するオプションを追加
-    .use(rehypeRaw) // ← HTMLを処理するプラグインを追加
+    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeRaw)
     .use(rehypeStringify)
     .process(matterResult.content);
   
@@ -73,7 +75,6 @@ async function getPostData(slug: string) {
   };
 }
 
-// Postコンポーネント
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function Post({ params }: any) {
   const postData = await getPostData(params.slug);
@@ -128,7 +129,7 @@ export default async function Post({ params }: any) {
         </header>
         
         {image && (
-          <div className="my-8 border border-black rounded-lg p-0">
+          <div className="my-8 border border-black rounded-lg p-1">
             <Image src={image} alt={title} width={1200} height={675} className="w-full h-auto rounded-md" priority/>
           </div>
         )}
@@ -152,23 +153,11 @@ export default async function Post({ params }: any) {
         {productBannerImage && productAmazonLink && (
           <div className="border border-black rounded-lg p-4 flex flex-col md:flex-row items-center gap-x-6 gap-y-4 bg-gray-50">
             <div className="w-full md:w-1/6 flex justify-center items-center">
-              <Image
-                src={productBannerImage}
-                alt={productName || 'Product Banner'}
-                width={150}
-                height={150}
-                className="w-auto h-auto object-contain rounded-md"
-                style={{ maxHeight: '120px' }}
-              />
+              <Image src={productBannerImage} alt={productName || 'Product Banner'} width={150} height={150} className="w-auto h-auto object-contain rounded-md" style={{ maxHeight: '120px' }}/>
             </div>
             <div className="w-full md:w-5/6 flex flex-col justify-center gap-y-4">
-              <div className="w-full text-center md:text-left">
-                <p className="text-base text-gray-500">{productBrand}</p>
-                <h3 className="font-bold text-lg text-base-dark">{productName}</h3>
-              </div>
-              <div className="w-full flex justify-center">
-                <Link href={productAmazonLink} target="_blank" rel="noopener noreferrer" className="bg-yellow-500 text-white font-bold py-2 px-4 rounded-md text-base hover:bg-yellow-600 transition-colors text-center max-w-xs transition-transform duration-75 active:translate-y-px">{productButtonText || 'Amazonで詳細をみる'}</Link>
-              </div>
+              <div className="w-full text-center md:text-left"><p className="text-base text-gray-500">{productBrand}</p><h3 className="font-bold text-lg text-base-dark">{productName}</h3></div>
+              <div className="w-full flex justify-center"><Link href={productAmazonLink} target="_blank" rel="noopener noreferrer" className="bg-yellow-500 text-white font-bold py-2 px-4 rounded-md text-base hover:bg-yellow-600 transition-colors text-center max-w-xs transition-transform duration-75 active:translate-y-px">{productButtonText || 'Amazonで詳細をみる'}</Link></div>
             </div>
           </div>
         )}
@@ -179,7 +168,7 @@ export default async function Post({ params }: any) {
   );
 }
 
-// generateStaticParams (変更なし)
+// generateStaticParams
 export async function generateStaticParams() {
   const postsDirectory = path.join(process.cwd(), 'src', 'posts');
   const filenames = fs.readdirSync(postsDirectory);
