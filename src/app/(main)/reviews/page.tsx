@@ -25,7 +25,7 @@ export default function ReviewsPage() {
                 <Link href={`/posts/${product.articleSlug}`} className="text-blue-600 hover:underline ml-1">(記事で見る)</Link>
               </p>
               <a href={product.amazonLink} target="_blank" rel="noopener noreferrer" className="w-full text-center bg-yellow-500 text-black py-2 px-4 rounded-md font-bold hover:bg-yellow-600 transition-colors">
-                Amazonで詳細をみる
+                Amazon
               </a>
             </div>
           </div>
