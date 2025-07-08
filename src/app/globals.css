@@ -218,3 +218,16 @@ html {
 .toc-container a:hover {
   text-decoration: underline;
 }
+
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* その他のグローバルスタイル */
+
+.dotted-bg {
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px; /* ドットの間隔を調整 */
+}
