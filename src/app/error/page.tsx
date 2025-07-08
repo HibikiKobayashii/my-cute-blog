@@ -2,20 +2,20 @@
 
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
-export default function ErrorPage() {
+// Suspense内で呼び出される、実際のページ内容コンポーネント
+function ErrorContent() {
   const searchParams = useSearchParams();
-  // URLの?error=...部分を取得
   const error = searchParams.get('error');
 
   const getErrorMessage = () => {
     if (error === 'AccessDenied') {
       return {
         title: 'アクセスが拒否されました',
-        message: 'このページにアクセスする権限がありません。',
+        message: 'このページにアクセスする権限がありません。許可されたアカウントでログインしてください。',
       };
     }
-    // その他の一般的なエラー
     return {
       title: 'エラーが発生しました',
       message: 'ページの表示中に問題が発生しました。',
@@ -34,5 +34,15 @@ export default function ErrorPage() {
         </Link>
       </div>
     </div>
+  );
+}
+
+// ページのエントリーポイントとなるコンポーネント
+export default function ErrorPage() {
+  return (
+    // ▼▼▼ Suspenseで囲む ▼▼▼
+    <Suspense fallback={<div>読み込み中...</div>}>
+      <ErrorContent />
+    </Suspense>
   );
 }
