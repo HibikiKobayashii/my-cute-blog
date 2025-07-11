@@ -8,7 +8,7 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(
         policy =>
         {
-            policy.WithOrigins("http://localhost:3000") // Next.jsのURLを許可
+            policy.WithOrigins("http://localhost:3000", "https://www.c1nom3.com") // Next.jsのURLを許可
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
