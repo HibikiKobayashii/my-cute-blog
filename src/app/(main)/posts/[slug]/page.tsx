@@ -13,8 +13,7 @@ import remarkSlug from 'remark-slug';
 import { visit } from 'unist-util-visit';
 import { Root } from 'mdast';
 import { ViewTracker } from '@/app/components/ViewTracker';
-import { LikeButton } from '@/app/components/LikeButton'; // ← インポートを追加
-
+import { LikeButton } from '@/app/components/LikeButton';
 
 // 型定義
 type Frontmatter = {
@@ -46,13 +45,16 @@ async function getPostData(slug: string) {
   const toc: TocItem[] = [];
 
   const processedContent = await remark()
-    .use(remarkSlug)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .use(remarkSlug as any)
     .use(() => (tree: Root) => {
       visit(tree, 'heading', (node) => {
         const text = node.children.map(child => (child.type === 'text' ? child.value : '')).join('');
         if (node.depth > 1 && node.depth < 4) {
           toc.push({
             text,
+            // ▼▼▼ このコメントを追加してエラーを解消します ▼▼▼
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             id: (node.data as any)?.id as string || '',
             depth: node.depth,
           });
@@ -119,12 +121,10 @@ export default async function Post({ params }: any) {
     ? contentHtml.split(tocPlaceholder)
     : [contentHtml, null];
 
-  // ▼▼▼ このreturn文の中身を <></> で囲み直しました ▼▼▼
   return (
     <>
       <ViewTracker slug={params.slug} />
-       <LikeButton slug={params.slug} /> {/* ← この行を追加 */}
-
+      <LikeButton slug={params.slug} />
 
       <article>
         <header className="mb-8 text-center">

@@ -7,7 +7,7 @@ import { LogoutButton } from "@/app/components/LogoutButton";
 import Pusher from 'pusher-js';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-// ▼▼▼ 1. 表示するデータの型に likeCount を追加 ▼▼▼
+// 表示するデータの型に likeCount を追加
 type AnalyticsData = {
   articleSlug: string;
   viewCount: number;
@@ -34,10 +34,8 @@ export default function AdminPage() {
     }
 
     if (status === "authenticated") {
-      // ▼▼▼ 2. 閲覧数といいね数の両方を取得してマージする処理 ▼▼▼
       const fetchData = async () => {
         try {
-          // 両方のAPIを同時に呼び出す
           const [viewsRes, likesRes] = await Promise.all([
             fetch('http://localhost:5053/api/views'),
             fetch('http://localhost:5053/api/likes')
@@ -46,12 +44,11 @@ export default function AdminPage() {
           const viewsData = await viewsRes.json();
           const likesData = await likesRes.json();
 
-          // データをマージする
           const combinedData = viewsData.map((view: { articleSlug: string, viewCount: number }) => {
             const like = likesData.find((l: { articleSlug: string }) => l.articleSlug === view.articleSlug);
             return {
               ...view,
-              likeCount: like ? like.likeCount : 0, // いいねがない場合は0
+              likeCount: like ? like.likeCount : 0,
             };
           });
 
@@ -63,7 +60,6 @@ export default function AdminPage() {
 
       fetchData();
 
-      // --- Pusherのリアルタイム処理 (変更なし) ---
       const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, {
         cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
       });
@@ -112,7 +108,13 @@ export default function AdminPage() {
         </header>
 
         <div className="space-y-8">
-          {/* リアルタイムグラフ (変更なし) */}
+          {/* ▼▼▼ liveCountを表示する部分を追加しました ▼▼▼ */}
+          <div className="bg-white border border-gray-300 rounded-lg p-4">
+            <h3 className="font-bold mb-2">現在のリアルタイム接続数</h3>
+            <p className="text-4xl font-bold text-blue-500">{liveCount}</p>
+          </div>
+
+          {/* リアルタイムグラフ */}
           <div className="bg-white border border-gray-300 rounded-lg p-4 h-80">
             <h3 className="font-bold mb-4">リアルタイム閲覧（直近10イベント）</h3>
             <ResponsiveContainer width="100%" height="100%">
@@ -120,7 +122,7 @@ export default function AdminPage() {
             </ResponsiveContainer>
           </div>
 
-          {/* ▼▼▼ 3. 総閲覧数テーブルに「いいね数」の列を追加 ▼▼▼ */}
+          {/* 総閲覧数テーブル */}
           <div className="bg-white border border-gray-300 rounded-lg p-8">
             <h2 className="text-2xl font-bold mb-4">記事ごとの総閲覧数・いいね数</h2>
             <div className="overflow-x-auto">
