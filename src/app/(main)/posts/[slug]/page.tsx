@@ -12,7 +12,9 @@ import PickUpPosts from '@/app/components/PickUpPosts';
 import remarkSlug from 'remark-slug';
 import { visit } from 'unist-util-visit';
 import { Root } from 'mdast';
-// import { Node } from 'unist'; // ← この行を削除しました
+import { ViewTracker } from '@/app/components/ViewTracker';
+import { LikeButton } from '@/app/components/LikeButton'; // ← インポートを追加
+
 
 // 型定義
 type Frontmatter = {
@@ -44,16 +46,13 @@ async function getPostData(slug: string) {
   const toc: TocItem[] = [];
 
   const processedContent = await remark()
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .use(remarkSlug as any)
+    .use(remarkSlug)
     .use(() => (tree: Root) => {
-      // visitの引数から : Node を削除しました
       visit(tree, 'heading', (node) => {
         const text = node.children.map(child => (child.type === 'text' ? child.value : '')).join('');
         if (node.depth > 1 && node.depth < 4) {
           toc.push({
             text,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             id: (node.data as any)?.id as string || '',
             depth: node.depth,
           });
@@ -74,6 +73,7 @@ async function getPostData(slug: string) {
     toc
   };
 }
+
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function Post({ params }: any) {
@@ -119,8 +119,13 @@ export default async function Post({ params }: any) {
     ? contentHtml.split(tocPlaceholder)
     : [contentHtml, null];
 
+  // ▼▼▼ このreturn文の中身を <></> で囲み直しました ▼▼▼
   return (
     <>
+      <ViewTracker slug={params.slug} />
+       <LikeButton slug={params.slug} /> {/* ← この行を追加 */}
+
+
       <article>
         <header className="mb-8 text-center">
           {emoji && <p className="text-5xl mb-4">{emoji}</p>}
@@ -129,7 +134,7 @@ export default async function Post({ params }: any) {
         </header>
         
         {image && (
-          <div className="my-8 border border-black rounded-lg p-0">
+          <div className="my-8 border border-black rounded-lg p-1">
             <Image src={image} alt={title} width={1200} height={675} className="w-full h-auto rounded-md" priority/>
           </div>
         )}
@@ -148,7 +153,6 @@ export default async function Post({ params }: any) {
         )}
       </article>
 
-      {/* 記事下コンテンツ */}
       <div className="mt-16 space-y-8">
         {productBannerImage && productAmazonLink && (
           <div className="border border-black rounded-lg p-4 flex flex-col md:flex-row items-center gap-x-6 gap-y-4 bg-gray-50">
@@ -157,7 +161,7 @@ export default async function Post({ params }: any) {
             </div>
             <div className="w-full md:w-5/6 flex flex-col justify-center gap-y-4">
               <div className="w-full text-center md:text-left"><p className="text-base text-gray-500">{productBrand}</p><h3 className="font-bold text-lg text-base-dark">{productName}</h3></div>
-              <div className="w-full flex justify-center"><Link href={productAmazonLink} target="_blank" rel="noopener noreferrer" className="bg-yellow-500 text-white font-bold py-2 px-4 rounded-md text-base hover:bg-yellow-600 transition-colors text-center max-w-xs transition-transform duration-75 active:translate-y-px">{productButtonText || 'Amazon'}</Link></div>
+              <div className="w-full flex justify-center"><Link href={productAmazonLink} target="_blank" rel="noopener noreferrer" className="bg-yellow-500 text-white font-bold py-2 px-4 rounded-md text-base hover:bg-yellow-600 transition-colors text-center max-w-xs transition-transform duration-75 active:translate-y-px">{productButtonText || 'Amazonで詳細をみる'}</Link></div>
             </div>
           </div>
         )}

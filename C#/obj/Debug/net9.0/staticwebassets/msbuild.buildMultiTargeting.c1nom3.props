@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="../build/c1nom3.props" />
+</Project>
