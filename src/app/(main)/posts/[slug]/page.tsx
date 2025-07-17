@@ -6,7 +6,7 @@ import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
 import rehypeRaw from 'rehype-raw';
 import Image from 'next/image';
-import Link from 'next/link';
+// import Link from 'next/link'; // ← 不要なため削除しました
 import { notFound } from 'next/navigation';
 import PickUpPosts from '@/app/components/PickUpPosts';
 import remarkSlug from 'remark-slug';
@@ -52,13 +52,16 @@ async function getPostData(slug: string) {
     const toc: TocItem[] = [];
 
     const processedContent = await remark()
-        .use(remarkSlug)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .use(remarkSlug as any)
         .use(() => (tree: Root) => {
         visit(tree, 'heading', (node) => {
             const text = node.children.map(child => (child.type === 'text' ? child.value : '')).join('');
             if (node.depth > 1 && node.depth < 5) {
                 toc.push({
                     text,
+                    // ▼▼▼ このコメントを追加してエラーを解消します ▼▼▼
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     id: (node.data as any)?.id as string || '',
                     depth: node.depth,
                 });
@@ -108,9 +111,6 @@ export default async function Post({ params }: any) {
     </>
   );
 
-  // ▼▼▼ ここから本文とコンポーネントを組み合わせるロジックを修正 ▼▼▼
-
-  // 1. 本文をTOCとプロダクトの目印で分割する
   const contentParts = contentHtml.split(/(\[TOC\]|\[PRODUCT:.+?\])/g);
 
   const renderContent = () => {
@@ -119,15 +119,13 @@ export default async function Post({ params }: any) {
         return <TocComponent key={`toc-${index}`} />;
       }
       if (part && part.startsWith('[PRODUCT:')) {
-        // [PRODUCT:id] から "id" の部分だけを抽出
         const productId = part.replace('[PRODUCT:', '').replace(']', '');
         const product = products?.find(p => p.id === productId);
         if (product) {
           return <ProductBox key={`product-${productId}`} {...product} />;
         }
-        return null; // もし商品が見つからなければ何も表示しない
+        return null;
       }
-      // 通常のHTMLコンテンツ
       return <div key={`content-${index}`} dangerouslySetInnerHTML={{ __html: part }} />;
     });
   };
