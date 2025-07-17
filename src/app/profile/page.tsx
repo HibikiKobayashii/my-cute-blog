@@ -14,7 +14,7 @@ export default function ProfilePage() {
           {/* ▼▼▼ プロフィール画像の枠線の色を指定しています ▼▼▼ */}
           {/* ライトモードでは border-black (黒)、ダークモードでは dark:border-white (白) */}
               {/* ▼▼▼ この行を、色のHEXコードを直接指定する形に修正しました ▼▼▼ */}
-              <div className="rounded-full border-[10px] border-[] dark:border-[#00000]">
+              <div className="rounded-full border-[10px] border-[] dark:border-[#00000え]">
             <Image
               src="/p.png"
               alt="プロフィール画像"
