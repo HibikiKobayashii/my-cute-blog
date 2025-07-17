@@ -250,3 +250,12 @@ html {
   margin-top: 2rem;
   margin-bottom: 0.5rem;
 }
+
+
+/* ▼▼▼ この部分をファイルの末尾に追加 ▼▼▼ */
+
+/* 記事内の段落(pタグ)の上下の余白を調整 */
+.article-content p {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+}
