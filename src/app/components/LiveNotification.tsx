@@ -5,10 +5,10 @@ import Pusher from 'pusher-js';
 
 export function LiveNotification() {
   const [isLive, setIsLive] = useState(false);
-  const [liveUrl, setLiveUrl] = useState("#"); // 実際の配信URLを後で設定
+  // YouTubeチャンネルのURLを設定
+  const liveUrl = "https://www.youtube.com/channel/UCb57aTH6T9Ts8NmHEfaol"; 
 
   useEffect(() => {
-    // Pusherに接続
     const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, {
       cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
     });
@@ -16,26 +16,24 @@ export function LiveNotification() {
     const channel = pusher.subscribe('youtube-channel');
 
     // 'live-started' イベントを待ち受ける
-    channel.bind('live-started', (data: any) => {
+    // (data) は将来的に使う可能性があるため、アンダースコアを付けて未使用であることを明示
+    channel.bind('live-started', (_data: any) => {
       console.log("Live stream started event received!");
       setIsLive(true);
-      // ここでdataから実際の配信URLを取得してsetLiveUrlすると、より良いです
     });
 
-    // 配信終了を検知するイベントもここに追加できます (例: 'live-ended')
     channel.bind('live-ended', () => {
         setIsLive(false);
     });
 
-    // コンポーネントが不要になったら接続を解除
     return () => {
       pusher.unsubscribe('youtube-channel');
       pusher.disconnect();
     };
-  }, []); // 最初の1回だけ実行
+  }, []);
 
   if (!isLive) {
-    return null; // 配信中でなければ何も表示しない
+    return null;
   }
 
   return (
@@ -46,7 +44,7 @@ export function LiveNotification() {
         rel="noopener noreferrer"
         className="inline-block bg-red-600 text-white font-bold text-lg px-8 py-4 rounded-lg animate-pulse"
       >
-    配信中！
+        配信中！
       </a>
     </div>
   );
