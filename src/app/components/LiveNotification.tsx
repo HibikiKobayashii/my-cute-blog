@@ -5,7 +5,6 @@ import Pusher from 'pusher-js';
 
 export function LiveNotification() {
   const [isLive, setIsLive] = useState(false);
-  // YouTubeチャンネルのURLを設定
   const liveUrl = "https://www.youtube.com/channel/UCb57aTH6T9Ts8NmHEfaol"; 
 
   useEffect(() => {
@@ -15,9 +14,8 @@ export function LiveNotification() {
 
     const channel = pusher.subscribe('youtube-channel');
 
-    // 'live-started' イベントを待ち受ける
-    // (data) は将来的に使う可能性があるため、アンダースコアを付けて未使用であることを明示
-    channel.bind('live-started', (_data: any) => {
+    // ▼▼▼ この行の引数 (_data: any) を削除しました ▼▼▼
+    channel.bind('live-started', () => {
       console.log("Live stream started event received!");
       setIsLive(true);
     });
