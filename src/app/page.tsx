@@ -3,6 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import Image from 'next/image';
+// ▼▼▼ 1. ライブ通知用のコンポーネントをインポート ▼▼▼
+import { LiveNotification } from '@/app/components/LiveNotification';
 
 type Post = {
   slug: string;
@@ -47,13 +49,11 @@ export default function Home() {
         />
       </div>
 
-      {/* ▼▼▼ ここから「PICK UP !」の見出しを追加 ▼▼▼ */}
-      <div className="text-center my-12  ">
-      <h2 className="text-3xl font-bold text-base-dark tracking-wider">
-      PICK UP!
+      <div className="text-center my-12">
+        <h2 className="text-3xl font-bold text-base-dark tracking-wider">
+          PICK UP!
         </h2>
       </div>
-      {/* ▲▲▲ ここまで追加 ▲▲▲ */}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {posts.slice(0, 3).map((post) => (
@@ -74,6 +74,9 @@ export default function Home() {
           </article>
         ))}
       </div>
+
+      {/* ▼▼▼ 2. ここにライブ通知コンポーネントを設置 ▼▼▼ */}
+      <LiveNotification />
       
       <div className="mt-16">
         <div className="flex items-center justify-center p-4 border border-subtle rounded-lg bg-gray-200 h-28">
