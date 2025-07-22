@@ -3,8 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import Image from 'next/image';
-// ▼▼▼ 1. ライブ通知用のコンポーネントをインポート ▼▼▼
-import { LiveNotification } from '@/app/components/LiveNotification';
+// import { LiveNotification } from '@/app/components/LiveNotification'; // ← この行を削除
 
 type Post = {
   slug: string;
@@ -37,7 +36,7 @@ export default function Home() {
         <h1 className="text-4xl font-bold text-base-dark tracking-wider">C1NOM3_</h1>
         <p className="text-subtle mt-2">A log from the dawn.</p>
       </header>
-      
+
       <div className="mb-12">
         <Image
           src="/1.png"
@@ -75,9 +74,8 @@ export default function Home() {
         ))}
       </div>
 
-      {/* ▼▼▼ 2. ここにライブ通知コンポーネントを設置 ▼▼▼ */}
-      <LiveNotification />
-      
+      {/* <LiveNotification /> ← この行を削除 */}
+
       <div className="mt-16">
         <div className="flex items-center justify-center p-4 border border-subtle rounded-lg bg-gray-200 h-28">
           <p className="text-subtle text-lg">工事中…</p>

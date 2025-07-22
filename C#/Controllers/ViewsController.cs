@@ -1,16 +1,18 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration; // IConfigurationのために追加
+using Microsoft.Extensions.Configuration;
 using PusherServer;
 using System.Threading.Tasks;
+// ▼▼▼ この2行を追加してください ▼▼▼
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 [Route("api/[controller]")]
 [ApiController]
 public class ViewsController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
-    private readonly IConfiguration _configuration; // Configurationを受け取るためのプロパティ
+    private readonly IConfiguration _configuration;
 
-    // コンストラクタを修正
     public ViewsController(ApplicationDbContext context, IConfiguration configuration)
     {
         _context = context;
@@ -30,7 +32,6 @@ public class ViewsController : ControllerBase
         _context.Views.Add(newView);
         await _context.SaveChangesAsync();
 
-        // ▼▼▼ Pusherの設定を新しい方法で読み込む ▼▼▼
         var pusherOptions = new PusherOptions
         {
             Cluster = _configuration["Pusher:Cluster"],
@@ -64,7 +65,7 @@ public class ViewsController : ControllerBase
                 ViewCount = g.Count()
             })
             .OrderByDescending(result => result.ViewCount)
-            .ToListAsync();
+            .ToListAsync(); // ← この行が正しく動作するようになります
 
         return Ok(viewCounts);
     }

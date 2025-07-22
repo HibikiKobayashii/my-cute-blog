@@ -2,13 +2,13 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ▼▼▼ 1. CORSサービスを追加 ▼▼▼
+// CORSサービスを追加
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(
         policy =>
         {
-            policy.WithOrigins("http://localhost:3000", "https://www.c1nom3.com") // Next.jsのURLを許可
+            policy.WithOrigins("http://localhost:3000", "https://www.c1nom3.com")
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
@@ -23,6 +23,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// ▼▼▼ この一行を追加して、バックグラウンドサービスを登録します ▼▼▼
+builder.Services.AddHostedService<YouTubePollingService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -34,7 +37,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// ▼▼▼ 2. CORS設定を有効化 ▼▼▼
 app.UseCors();
 
 app.UseAuthorization();
