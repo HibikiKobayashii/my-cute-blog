@@ -1,3 +1,4 @@
+// src/app/admin/page.tsx
 "use client";
 
 import { useSession } from "next-auth/react";
@@ -7,11 +8,17 @@ import { LogoutButton } from "@/app/components/LogoutButton";
 import Pusher from 'pusher-js';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-// 表示するデータの型に likeCount を追加
+// 総閲覧数データの型
 type AnalyticsData = {
   articleSlug: string;
   viewCount: number;
   likeCount: number;
+};
+
+// 日別閲覧数データの型
+type DailyViewData = {
+    date: string;
+    views: number;
 };
 
 type RealtimeData = {
@@ -26,38 +33,35 @@ export default function AdminPage() {
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData[]>([]);
   const [liveCount, setLiveCount] = useState(0);
   const [realtimeData, setRealtimeData] = useState<RealtimeData[]>([]);
+  
+  const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
+  const [dailyData, setDailyData] = useState<DailyViewData[]>([]);
 
-  // --- データの取得処理 ---
+  // fetchData関数をuseEffectの外に定義し、再利用しやすくします
+  const fetchData = async () => {
+    try {
+      const [viewsRes, likesRes] = await Promise.all([
+        fetch('http://localhost:5053/api/views'),
+        fetch('http://localhost:5053/api/likes')
+      ]);
+      const viewsData = await viewsRes.json();
+      const likesData = await likesRes.json();
+      const combinedData = viewsData.map((view: { articleSlug: string, viewCount: number }) => {
+        const like = likesData.find((l: { articleSlug: string }) => l.articleSlug === view.articleSlug);
+        return { ...view, likeCount: like ? like.likeCount : 0 };
+      });
+      setAnalyticsData(combinedData);
+    } catch (error) {
+      console.error("Failed to fetch analytics data:", error);
+    }
+  };
+
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push('/login');
     }
 
     if (status === "authenticated") {
-      const fetchData = async () => {
-        try {
-          const [viewsRes, likesRes] = await Promise.all([
-            fetch('http://localhost:5053/api/views'),
-            fetch('http://localhost:5053/api/likes')
-          ]);
-
-          const viewsData = await viewsRes.json();
-          const likesData = await likesRes.json();
-
-          const combinedData = viewsData.map((view: { articleSlug: string, viewCount: number }) => {
-            const like = likesData.find((l: { articleSlug: string }) => l.articleSlug === view.articleSlug);
-            return {
-              ...view,
-              likeCount: like ? like.likeCount : 0,
-            };
-          });
-
-          setAnalyticsData(combinedData);
-        } catch (error) {
-          console.error("Failed to fetch analytics data:", error);
-        }
-      };
-
       fetchData();
 
       const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, {
@@ -91,7 +95,44 @@ export default function AdminPage() {
     }
   }, [status, router]);
 
-  // --- ページの表示部分 ---
+  const handleArticleClick = async (slug: string) => {
+    if (selectedSlug === slug) {
+      setSelectedSlug(null);
+      setDailyData([]);
+      return;
+    }
+    setSelectedSlug(slug);
+    try {
+      const res = await fetch(`http://localhost:5053/api/views/daily/${slug}`);
+      const data = await res.json();
+      setDailyData(data);
+    } catch (error) {
+      console.error("Failed to fetch daily data:", error);
+      setDailyData([]);
+    }
+  };
+  
+  // ▼▼▼ リセットボタンが押された時の処理を新しく追加 ▼▼▼
+  const handleResetViews = async (slug: string) => {
+    if (!slug) return;
+    if (!confirm(`「${slug}」の閲覧数データを本当にリセットしますか？この操作は元に戻せません。`)) {
+        return;
+    }
+
+    try {
+        await fetch(`http://localhost:5053/api/views/${slug}`, { method: 'DELETE' });
+        alert(`「${slug}」の閲覧数データをリセットしました。`);
+        
+        // データを再読み込みして表示を更新
+        fetchData();
+        setSelectedSlug(null);
+        setDailyData([]);
+    } catch (error) {
+        console.error("Failed to reset view data:", error);
+        alert("リセットに失敗しました。");
+    }
+  };
+
   if (status === "loading") {
     return <div className="flex items-center justify-center min-h-[60vh]"><p>分析データを読み込んでいます...</p></div>;
   }
@@ -108,13 +149,11 @@ export default function AdminPage() {
         </header>
 
         <div className="space-y-8">
-          {/* ▼▼▼ liveCountを表示する部分を追加しました ▼▼▼ */}
           <div className="bg-white border border-gray-300 rounded-lg p-4">
             <h3 className="font-bold mb-2">現在のリアルタイム接続数</h3>
             <p className="text-4xl font-bold text-blue-500">{liveCount}</p>
           </div>
 
-          {/* リアルタイムグラフ */}
           <div className="bg-white border border-gray-300 rounded-lg p-4 h-80">
             <h3 className="font-bold mb-4">リアルタイム閲覧（直近10イベント）</h3>
             <ResponsiveContainer width="100%" height="100%">
@@ -122,7 +161,6 @@ export default function AdminPage() {
             </ResponsiveContainer>
           </div>
 
-          {/* 総閲覧数テーブル */}
           <div className="bg-white border border-gray-300 rounded-lg p-8">
             <h2 className="text-2xl font-bold mb-4">記事ごとの総閲覧数・いいね数</h2>
             <div className="overflow-x-auto">
@@ -136,7 +174,11 @@ export default function AdminPage() {
                 </thead>
                 <tbody>
                   {[...analyticsData].sort((a,b) => b.viewCount - a.viewCount).map((data) => (
-                    <tr key={data.articleSlug} className="border-b">
+                    <tr 
+                      key={data.articleSlug} 
+                      className="border-b hover:bg-gray-100 cursor-pointer"
+                      onClick={() => handleArticleClick(data.articleSlug)}
+                    >
                       <td className="p-2 font-mono">{data.articleSlug}</td>
                       <td className="p-2 text-xl font-bold">{data.viewCount}</td>
                       <td className="p-2 text-xl font-bold text-pink-500">{data.likeCount}</td>
@@ -146,6 +188,35 @@ export default function AdminPage() {
               </table>
             </div>
           </div>
+          
+          {selectedSlug && (
+            <div className="bg-white border border-gray-300 rounded-lg p-4">
+              {/* ▼▼▼ タイトルとボタンを横並びにするためのdivを追加 ▼▼▼ */}
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="font-bold">{selectedSlug} の日別閲覧数</h3>
+                {/* ▼▼▼ リセットボタンを追加 ▼▼▼ */}
+                <button 
+                  onClick={() => handleResetViews(selectedSlug)}
+                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded text-sm"
+                >
+                  閲覧数リセット
+                </button>
+              </div>
+              {/* ▼▼▼ グラフの高さを確保するためのdivを追加 ▼▼▼ */}
+              <div className="h-72">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={dailyData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" />
+                    <YAxis allowDecimals={false} />
+                    <Tooltip />
+                    <Legend />
+                    <Line type="monotone" dataKey="views" name="閲覧数" stroke="#82ca9d" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );

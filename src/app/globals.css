@@ -1,34 +1,14 @@
 @import "tailwindcss";
 
-
-/* src/app/globals.css */
-
-/* ▼▼▼ この部分を追加 ▼▼▼ */
-html {
-  scroll-behavior: smooth;
-}
-/* ▲▲▲ ここまで追加 ▲▲▲ */
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* ... (以下、他のスタイル) ... */
-
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-/* 変更点：OSのダークモード設定ではなく、class="dark" に連動するように修正 */
 .dark:root {
   --background: #0a0a0a;
   --foreground: #ededed;
@@ -42,126 +22,37 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
-  /* もしこの中に font-family: ...; という行があれば、削除してください */
 }
-
-/* src/app/globals.css */
-
-/* ▼▼▼ この部分をファイルの末尾に追加 ▼▼▼ */
-
-/* Markdownの記事コンテンツ用のスタイル */
-.article-content h1 {
-  font-size: 2.25rem; /* 36px */
-  line-height: 2.5rem; /* 40px */
-  font-weight: 700;
-  margin-top: 0;
-  margin-bottom: 2rem;
-}
-
-.article-content h2 {
-  font-size: 1.875rem; /* 30px */
-  line-height: 2.25rem; /* 36px */
-  font-weight: 600;
-  margin-top: 3rem;
-  margin-bottom: 1.5rem;
-}
-
-.article-content h3 {
-  font-size: 1.5rem; /* 24px */
-  line-height: 2rem; /* 32px */
-  font-weight: 600;
-  margin-top: 2.5rem;
-  margin-bottom: 1rem;
-}
-
-/* ▲▲▲ ここまで追加 ▲▲▲ */
-
-/* src/app/globals.css */
-
-/* ▼▼▼ この部分をファイルの末尾に追加 ▼▼▼ */
-
-/* 目次全体のスタイル */
-.prose .toc {
-  background-color: #f7fafc; /* 背景色 */
-  border: 1px solid #e2e8f0; /* 枠線 */
-  border-radius: 0.5rem;      /* 角の丸み */
-  padding: 1.5rem;            /* 内側の余白 */
-}
-
-/* ダークモード時の目次のスタイル */
-.dark .prose .toc {
-  background-color: #2d3748; /* 背景色 */
-  border-color: #4a5568;     /* 枠線 */
-}
-
-/* 目次の「目次」というタイトル部分のスタイル */
-.prose h2.toc-heading {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  font-size: 1.25rem;
-}
-
-/* 目次のリスト項目のスタイル */
-.prose .toc-item a {
-  text-decoration: none; /* 下線を消す */
-  color: #4a5568;
-}
-
-.dark .prose .toc-item a {
-  color: #cbd5e0;
-}
-
-.prose .toc-item a:hover {
-  text-decoration: underline; /* ホバー時に下線を表示 */
-}
-
-/* ▲▲▲ ここまで追加 ▲▲▲ */
-
-
-/* ▼▼▼ この部分をファイルの末尾に追加 ▼▼▼ */
-
-/* 記事内のすべての画像に枠線を適用するスタイル */
-.article-content img {
-  border: 1px solid black;
-  border-radius: 0.5rem; /* rounded-lg */
-  padding: 0;      /* p-1 */
-}
-
-/* ▲▲▲ ここまで追加 ▲▲▲ */
-
-/* src/app/globals.css の末尾に追加 */
-
-.toc-container {
-  background-color: #f0f0f0; /* 明るい背景色 */
-  border: 1px solid black;   /* 黒い枠線 */
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-}
-.toc-container h2 {
-  margin-top: 0;
-  font-size: 1.25rem;
-}
-.toc-container ul {
-  padding-left: 1.25rem;
-  margin-bottom: 0;
-}
-
-
-/* =============================================== */
-/* ▼▼▼ この部分をファイルの末尾に追加してください ▼▼▼ */
-/* =============================================== */
 
 html {
   scroll-behavior: smooth;
 }
 
-/* 記事コンテンツの見出しのジャンプ位置調整 */
-.article-content h1,
-.article-content h2,
-.article-content h3,
+/* =============================================== */
+/* ▼▼▼ 記事と目次のスタイル ▼▼▼ */
+/* =============================================== */
+
+/* 記事コンテンツの見出し */
+.article-content h1, .article-content h2, .article-content h3, .article-content h4 {
+  scroll-margin-top: 5rem;
+}
+.article-content h1 {
+  font-size: 2.25rem; line-height: 2.5rem; font-weight: 700; margin-top: 0; margin-bottom: 2rem;
+}
+.article-content h2 {
+  font-size: 1.875rem; line-height: 2.25rem; font-weight: 600; margin-top: 3rem; margin-bottom: 1.5rem;
+}
+.article-content h3 {
+  font-size: 1.5rem; line-height: 2rem; font-weight: 600; margin-top: 2.5rem; margin-bottom: 1rem;
+}
 .article-content h4 {
-  scroll-margin-top: 5rem; /* ヘッダーの高さ分、ジャンプ位置を調整 */
+  font-size: 1.25rem; line-height: 1.75rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.5rem;
+}
+
+/* ▼▼▼ このpタグのスタイルが「2回改行」の隙間を作ります ▼▼▼ */
+.article-content p {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
 }
 
 /* 記事内の画像スタイル */
@@ -180,82 +71,21 @@ html {
   margin-top: 2rem;
   margin-bottom: 2rem;
 }
-
-/* 目次内の「目次」という見出し */
 .toc-container h2 {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  font-size: 1.25rem;
-  font-weight: 700;
-  border-bottom: none;
+  margin-top: 0; margin-bottom: 1rem; font-size: 1.25rem; font-weight: 700; border-bottom: none;
 }
-
-/* 目次のリスト全体 */
 .toc-container ul {
-  list-style-type: none;
-  padding-left: 0;
-  margin-bottom: 0;
+  list-style-type: none; padding-left: 0; margin-bottom: 0;
 }
-
-/* 目次の各項目 */
 .toc-container li {
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
+  padding-top: 0.25rem; padding-bottom: 0.25rem;
 }
-
-/* h3など、ネストしたリストのインデント */
 .toc-container ul ul {
-    padding-left: 1.5rem;
-    margin-top: 0.5rem;
+    padding-left: 1.5rem; margin-top: 0.5rem;
 }
-
-/* 目次のリンク */
 .toc-container a {
-  text-decoration: none;
-  color: #333333;
+  text-decoration: none; color: #333333;
 }
-
 .toc-container a:hover {
   text-decoration: underline;
-}
-
-
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* その他のグローバルスタイル */
-
-.dotted-bg {
-  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
-  background-size: 20px 20px; /* ドットの間隔を調整 */
-}
-
-
-
-.article-content h3 {
-  font-size: 1.5rem; /* 24px */
-  line-height: 2rem; /* 32px */
-  font-weight: 600;
-  margin-top: 2.5rem;
-  margin-bottom: 1rem;
-}
-
-/* ▼▼▼ このh4のスタイルを追加してください ▼▼▼ */
-.article-content h4 {
-  font-size: 1.25rem; /* 20px */
-  line-height: 1.75rem; /* 28px */
-  font-weight: 600;
-  margin-top: 2rem;
-  margin-bottom: 0.5rem;
-}
-
-
-/* ▼▼▼ この部分をファイルの末尾に追加 ▼▼▼ */
-
-/* 記事内の段落(pタグ)の上下の余白を調整 */
-.article-content p {
-  margin-top: 1.25em;
-  margin-bottom: 1.25em;
 }

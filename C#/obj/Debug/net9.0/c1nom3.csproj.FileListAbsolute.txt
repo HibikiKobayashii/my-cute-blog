@@ -160,3 +160,9 @@
 /Users/kobayashikyou/my-cute-blog/C#/obj/Debug/net9.0/c1nom3.pdb
 /Users/kobayashikyou/my-cute-blog/C#/obj/Debug/net9.0/c1nom3.genruntimeconfig.cache
 /Users/kobayashikyou/my-cute-blog/C#/obj/Debug/net9.0/ref/c1nom3.dll
+/Users/kobayashikyou/my-cute-blog/C#/bin/Debug/net9.0/Google.Apis.dll
+/Users/kobayashikyou/my-cute-blog/C#/bin/Debug/net9.0/Google.Apis.Auth.dll
+/Users/kobayashikyou/my-cute-blog/C#/bin/Debug/net9.0/Google.Apis.Core.dll
+/Users/kobayashikyou/my-cute-blog/C#/bin/Debug/net9.0/Google.Apis.YouTube.v3.dll
+/Users/kobayashikyou/my-cute-blog/C#/bin/Debug/net9.0/System.Management.dll
+/Users/kobayashikyou/my-cute-blog/C#/bin/Debug/net9.0/runtimes/win/lib/net7.0/System.Management.dll

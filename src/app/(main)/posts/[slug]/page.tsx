@@ -6,7 +6,6 @@ import remarkRehype from 'remark-rehype';
 import rehypeStringify from 'rehype-stringify';
 import rehypeRaw from 'rehype-raw';
 import Image from 'next/image';
-// import Link from 'next/link'; // ← 不要なため削除しました
 import { notFound } from 'next/navigation';
 import PickUpPosts from '@/app/components/PickUpPosts';
 import remarkSlug from 'remark-slug';
@@ -15,6 +14,7 @@ import { Root } from 'mdast';
 import { ViewTracker } from '@/app/components/ViewTracker';
 import { LikeButton } from '@/app/components/LikeButton';
 import ProductBox from '@/app/components/ProductBox';
+import remarkBreaks from 'remark-breaks'; // ▼ 1. インポートを追加
 
 // productの型定義
 type Product = {
@@ -52,6 +52,7 @@ async function getPostData(slug: string) {
     const toc: TocItem[] = [];
 
     const processedContent = await remark()
+        .use(remarkBreaks) // ▼ 2. この行を追加
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .use(remarkSlug as any)
         .use(() => (tree: Root) => {
@@ -60,7 +61,6 @@ async function getPostData(slug: string) {
             if (node.depth > 1 && node.depth < 5) {
                 toc.push({
                     text,
-                    // ▼▼▼ このコメントを追加してエラーを解消します ▼▼▼
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     id: (node.data as any)?.id as string || '',
                     depth: node.depth,
@@ -72,12 +72,12 @@ async function getPostData(slug: string) {
         .use(rehypeRaw)
         .use(rehypeStringify)
         .process(matterResult.content);
-    
+
     const contentHtml = processedContent.toString();
-    
-    return { 
-        slug, 
-        contentHtml, 
+
+    return {
+        slug,
+        contentHtml,
         frontmatter: matterResult.data as Frontmatter,
         toc
     };

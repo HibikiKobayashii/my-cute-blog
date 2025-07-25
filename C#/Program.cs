@@ -1,3 +1,4 @@
+// C#/Program.cs
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,8 +24,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// ▼▼▼ この一行を追加して、バックグラウンドサービスを登録します ▼▼▼
-builder.Services.AddHostedService<YouTubePollingService>();
+// ▼▼▼ YouTubeのバックグラウンドサービスを呼び出す行を削除しました ▼▼▼
+// builder.Services.AddHostedService<YouTubePollingService>();
 
 var app = builder.Build();
 
