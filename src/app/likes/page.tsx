@@ -48,7 +48,7 @@ export default function LikesPage() {
 
   return (
     <div className="max-w-4xl mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-8">いいねした記事「※現在このページは工事中です...」</h1>
+      <h1 className="text-3xl font-bold mb-8">いいねした記事</h1>
       <div className="space-y-4">
         {likedPosts.length > 0 ? (
           likedPosts.map(post => (
