@@ -1,3 +1,4 @@
+// src/app/(main)/posts/[slug]/page.tsx
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
@@ -14,7 +15,7 @@ import { Root } from 'mdast';
 import { ViewTracker } from '@/app/components/ViewTracker';
 import { LikeButton } from '@/app/components/LikeButton';
 import ProductBox from '@/app/components/ProductBox';
-import remarkBreaks from 'remark-breaks'; // ▼ 1. インポートを追加
+import remarkBreaks from 'remark-breaks';
 
 // productの型定義
 type Product = {
@@ -52,7 +53,7 @@ async function getPostData(slug: string) {
     const toc: TocItem[] = [];
 
     const processedContent = await remark()
-        .use(remarkBreaks) // ▼ 2. この行を追加
+        .use(remarkBreaks)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .use(remarkSlug as any)
         .use(() => (tree: Root) => {
@@ -83,10 +84,12 @@ async function getPostData(slug: string) {
     };
 }
 
+// ▼▼▼ この行の引数の書き方を修正します ▼▼▼
+export default async function Post({ params }: { params: { slug: string } }) {
+  // ▼▼▼ 先にslugを取り出します ▼▼▼
+  const { slug } = params;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default async function Post({ params }: any) {
-  const postData = await getPostData(params.slug);
+  const postData = await getPostData(slug); // ▼▼▼ params.slug を slug に変更
   if (!postData) { notFound(); }
 
   const { title, date, emoji, image, products } = postData.frontmatter;
@@ -132,8 +135,8 @@ export default async function Post({ params }: any) {
 
   return (
     <>
-      <ViewTracker slug={params.slug} />
-      <LikeButton slug={params.slug} />
+      <ViewTracker slug={slug} /> {/* ▼▼▼ params.slug を slug に変更 */}
+      <LikeButton slug={slug} /> {/* ▼▼▼ params.slug を slug に変更 */}
 
       <article>
         <header className="mb-8 text-center">
@@ -157,7 +160,7 @@ export default async function Post({ params }: any) {
         <div className="flex items-center justify-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-100 dark:bg-gray-800 h-28">
           <p className="text-gray-500 dark:text-gray-400 text-lg">工事中…</p>
         </div>
-        <PickUpPosts currentPostSlug={params.slug} />
+        <PickUpPosts currentPostSlug={slug} /> {/* ▼▼▼ params.slug を slug に変更 */}
       </div>
     </>
   );
