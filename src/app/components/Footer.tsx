@@ -44,7 +44,7 @@ export default function Footer() {
           </div>
           
           <div className="text-center text-subtle text-sm">
-            <p>このサイトは React / Next.js / Tailwind CSS / C# で制作しています。</p>
+            <p>このサイトは、Amazonアソシエイトを使用しています。</p>
             <p className="mt-2">© {currentYear} C1NOM3_. All Rights Reserved.</p>
           </div>
         </div>
