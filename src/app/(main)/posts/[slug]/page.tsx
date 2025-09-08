@@ -43,6 +43,13 @@ type TocItem = {
   depth: number;
 };
 
+// ▼▼▼ ページのPropsの型を定義します ▼▼▼
+type Props = {
+  params: {
+    slug: string;
+  };
+};
+
 // getPostData関数
 async function getPostData(slug: string) {
     const postsDirectory = path.join(process.cwd(), 'src', 'posts');
@@ -84,12 +91,11 @@ async function getPostData(slug: string) {
     };
 }
 
-// ▼▼▼ この行の引数の書き方を修正します ▼▼▼
-export default async function Post({ params }: { params: { slug: string } }) {
-  // ▼▼▼ 先にslugを取り出します ▼▼▼
+// ▼▼▼ 引数の型に先ほど定義したPropsを使用します ▼▼▼
+export default async function Post({ params }: Props) {
   const { slug } = params;
 
-  const postData = await getPostData(slug); // ▼▼▼ params.slug を slug に変更
+  const postData = await getPostData(slug);
   if (!postData) { notFound(); }
 
   const { title, date, emoji, image, products } = postData.frontmatter;
@@ -135,8 +141,8 @@ export default async function Post({ params }: { params: { slug: string } }) {
 
   return (
     <>
-      <ViewTracker slug={slug} /> {/* ▼▼▼ params.slug を slug に変更 */}
-      <LikeButton slug={slug} /> {/* ▼▼▼ params.slug を slug に変更 */}
+      <ViewTracker slug={slug} />
+      <LikeButton slug={slug} />
 
       <article>
         <header className="mb-8 text-center">
@@ -160,7 +166,7 @@ export default async function Post({ params }: { params: { slug: string } }) {
         <div className="flex items-center justify-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-100 dark:bg-gray-800 h-28">
           <p className="text-gray-500 dark:text-gray-400 text-lg">工事中…</p>
         </div>
-        <PickUpPosts currentPostSlug={slug} /> {/* ▼▼▼ params.slug を slug に変更 */}
+        <PickUpPosts currentPostSlug={slug} />
       </div>
     </>
   );
