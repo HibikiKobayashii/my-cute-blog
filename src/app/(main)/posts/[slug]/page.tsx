@@ -43,12 +43,12 @@ type TocItem = {
   depth: number;
 };
 
-// ▼▼▼ ページのPropsの型を定義します ▼▼▼
-type Props = {
-  params: {
-    slug: string;
-  };
-};
+// ▼▼▼ ページのPropsの型定義を削除します ▼▼▼
+// type Props = {
+//   params: {
+//     slug: string;
+//   };
+// };
 
 // getPostData関数
 async function getPostData(slug: string) {
@@ -91,8 +91,9 @@ async function getPostData(slug: string) {
     };
 }
 
-// ▼▼▼ 引数の型に先ほど定義したPropsを使用します ▼▼▼
-export default async function Post({ params }: Props) {
+// ▼▼▼ 引数の型をanyに戻します ▼▼▼
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default async function Post({ params }: any) {
   const { slug } = params;
 
   const postData = await getPostData(slug);
